@@ -6,19 +6,17 @@ export default Component.extend({
   tagName: 'footer',
 
   page: service(),
+  fastboot: service(),
 
-  nextSectionPage: computed('page.nextSection.pages.[]', function() {
-    let pages = get(this, 'page.nextSection.pages');
-
-    if(pages && pages.length) {
-      return pages[0];
+  init() {
+    this._super(...arguments);
+    const promise = this.get('page.currentPage')
+      .then((currentPage) => {
+        console.log('currentPage resolve in component');
+        this.set('currentPage', currentPage)
+      });
+    if (this.get('fastboot.isFastBoot')) {
+      this.get('fastboot').deferRendering(promise);
     }
-  }),
-  previousSectionPage: computed('page.previousSection.pages.[]', function() {
-    let pages = get(this, 'page.previousSection.pages');
-
-    if(pages && pages.length) {
-      return pages[pages.length - 1];
-    }
-  })
+  }
 });
